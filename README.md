@@ -1,101 +1,123 @@
-<h1 align="center">Hadith API</h1>
+# Hikmah Dynamics Hadith API
 
-<p align="center">
-  <img width="460" height="300" src="https://github.com/fawazahmed0/hadith-api/raw/1/hadith.jpg">
-</p>
+A self-hosted API for Islamic texts that you can run on your own server without relying on external services.
 
-[![](https://data.jsdelivr.com/v1/package/gh/fawazahmed0/hadith-api/badge)](https://www.jsdelivr.com/package/gh/fawazahmed0/hadith-api)
-[![](https://data.jsdelivr.com/v1/package/gh/fawazahmed0/hadith-api/badge/rank)](https://www.jsdelivr.com/package/gh/fawazahmed0/hadith-api)
+## Features
 
+- **Self-Hosted**: Run the API on your own server or computer
+- **Complete Control**: Manage your own data without external dependencies
+- **No Rate Limits**: Use as much as you need
+- **Multiple Languages**: Support for various translations
+- **Multiple Hadith Collections**: All major hadith books included
+- **Quran Integration**: Complete Quran text with translations
+- **API Key Authentication**: Secure access for your applications
+- **Simple Setup**: Easy to install and configure
 
-**In the name of God, who has guided me to do this work**
+## Installation
 
+1. Clone this repository to your local machine:
+   ```
+   git clone https://github.com/osi1012/hadith-api.git
+   ```
 
-**Features:**
-- Free & Blazing Fast response
-- No Rate limits
-- Multiple Languages
-- Multiple Grades
+2. Install the required dependencies:
+   ```
+   cd hadith-api
+   npm install
+   ```
 
+3. Configure your server settings in `config.js`
 
-**URL Structure:**
+4. Start the server:
+   ```
+   npm start
+   ```
 
-`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@{apiVersion}/{endpoint}`
+## API Endpoints
 
-**Formats:**
+### Hadith Endpoints
 
-The Endpoints Supports HTTP GET Method and returns the data in  two formats:
+- `/api/editions` - List all available hadith collections
+- `/api/editions/{editionName}` - Get a specific hadith collection
+- `/api/editions/{editionName}/{hadithNumber}` - Get a specific hadith
+- `/api/editions/{editionName}/sections/{sectionNumber}` - Get a specific section
+- `/api/search?q={query}` - Search across all hadith collections
 
-`/{endpoint}.json`
+### Quran Endpoints
 
-`/{endpoint}.min.json`
+- `/api/quran/surah` - List all surahs
+- `/api/quran/surah/{surahNumber}` - Get a specific surah
+- `/api/quran/ayah/{surahNumber}/{ayahNumber}` - Get a specific ayah
+- `/api/quran/translation/{language}/{surahNumber}` - Get translations
+- `/api/quran/search?q={query}&lang={language}` - Search the Quran
 
-The above formats also work for fallback i.e if `.min.json` link fails, you can use `.json` link and vice versa
+## Authentication
 
-**Warning:** You should include fallback mechanism in your code, [to avoid issues](https://github.com/fawazahmed0/hadith-api/issues/3)
+To secure your API, you can enable API key authentication:
 
-**Endpoints:**
+1. Generate an API key in the admin interface
+2. Include the API key in your requests:
+   ```
+   /api/editions/eng-bukhari?api_key=YOUR_API_KEY
+   ```
 
-- `/editions`<br>
-> Lists all the available editions in prettified json format:<br>
- [https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions.json](https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions.json "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions.json") <br>
+## Customization
 
-> Get a minified version of it:<br>
-[https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions.min.json](https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions.min.json "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions.min.json")
+You can customize the API by:
 
-- `/editions/{editionName}`<br>
-> Get the whole hadith/hadith translation:<br>
-[https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud.json](https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud.json "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud.json") <br>
+1. Editing the server configuration in `config.js`
+2. Adding your own hadith collections to the `editions` directory
+3. Modifying the API endpoints in `apiscript.js`
 
-- `/editions/{editionName}/{HadithNo}` <br>
-> Get the 1035th Hadith:<br>
-[https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud/1035.json](https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud/1035.json "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud/1035.json")
+## Integration with Your App
 
-> Get the 1035th Hadith in minified format:<br>
-[https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud/1035.min.json](https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud/1035.min.json "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud/1035.min.json")
+### Example: Fetching a Random Hadith
 
-- `/editions/{editionName}/sections/{sectionNo}` <br>
-> Get Section 7:<br>
-[https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud/sections/7.json](https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud/sections/7.json "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/eng-abudawud/sections/7.json")
+```javascript
+async function fetchRandomHadith() {
+  try {
+    const response = await fetch('http://your-server.com/api/editions/eng-bukhari/random');
+    const data = await response.json();
+    
+    // Display the hadith
+    document.getElementById('hadith-text').textContent = data.text;
+    document.getElementById('hadith-reference').textContent = data.reference;
+  } catch (error) {
+    console.error('Error fetching hadith:', error);
+  }
+}
+```
 
+### Example: Searching the Quran
 
-- `/info` <br>
-> Get all the details about hadith book, such as hadith grades, books reference etc <br>
-[https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/info.json](https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/info.json "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/info.json")<br>
+```javascript
+async function searchQuran(query) {
+  try {
+    const response = await fetch(`http://your-server.com/api/quran/search?q=${query}&lang=en`);
+    const results = await response.json();
+    
+    // Display results
+    const resultsContainer = document.getElementById('search-results');
+    resultsContainer.innerHTML = '';
+    
+    results.forEach(result => {
+      const resultElement = document.createElement('div');
+      resultElement.innerHTML = `
+        <p><strong>Surah ${result.surah}:${result.ayah}</strong></p>
+        <p>${result.text}</p>
+      `;
+      resultsContainer.appendChild(resultElement);
+    });
+  } catch (error) {
+    console.error('Error searching Quran:', error);
+  }
+}
+```
 
-### Contribution:
-Without your contribution, this work won't survive, whenever you find any issue, please let me [Know](https://github.com/fawazahmed0/hadith-api/issues/new "Know"), so that I can also fix it and people can benefit from it, incase of any question, issue or problems etc<br> you can let me [Know](https://github.com/fawazahmed0/hadith-api/issues/new "Know")
+## Credits
 
-- Please help by adding new translations to this repo, you can share me the translation [here](https://github.com/fawazahmed0/hadith-api/issues/new "here")
+This API is based on the work of [fawazahmed0's hadith-api](https://github.com/fawazahmed0/hadith-api) and has been modified to be self-hosted and customized for Hikmah Dynamics.
 
-or
-- Read [Contribute](https://github.com/fawazahmed0/hadith-api/blob/1/CONTRIBUTING.md "Contribute") to add/update the translation directly to this repo
+## License
 
-
-### Download: [Here](https://github.com/fawazahmed0/hadith-api/blob/1/download.md)
-
-### Any Issues: [Raise here](https://github.com/fawazahmed0/hadith-api/issues/new "Raise here")
-
-### Demos:
-Projects using Hadith API:
-- [Hadiths](https://fawazahmed0.github.io/hadiths)
-- [Quran Hadith Search Engine](https://fawazahmed0.github.io/quran-hadith-search/)
-
-### Other Similar Projects:
-- [Quran-api](https://github.com/fawazahmed0/quran-api)
-
-
-### Share:
-Please share this with your friends and Star this repo by clicking on [:star: button](#) above [:arrow_upper_right:](#)
-
-### References:
-All the open source projects and dawah/Islamic organizations
-
-Please see [References](https://github.com/fawazahmed0/hadith-api/blob/1/References.md "References")
-
-
-<br>
-<br>
-<br>
-
-[:pencil2:*Improve this page*](https://github.com/fawazahmed0/hadith-api/edit/1/README.md)
+This project is licensed under the MIT License - see the LICENSE file for details.
